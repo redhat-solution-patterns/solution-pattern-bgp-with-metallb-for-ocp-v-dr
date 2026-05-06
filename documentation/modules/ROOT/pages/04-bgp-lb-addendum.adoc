@@ -1,8 +1,11 @@
+:sectnums!:
+:sectlinks:
+:doctype: book
 
 [#bgp-lb-addedum]
-== Developer Resources
+== 4. Developer Resources
 
-### Addendum: versions, notes and configurations related to this Proof-of-Concept
+### 4.1. Addendum: versions, notes and configurations related to this Proof-of-Concept
 
 [cols="2,3,1,5a"]
 |===

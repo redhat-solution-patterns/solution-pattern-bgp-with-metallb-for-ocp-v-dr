@@ -3,7 +3,7 @@
 import { series, watch } from "gulp";
 import { remove } from "fs-extra";
 import { readFileSync } from "fs";
-import { load as yamlLoad } from "yaml-js";
+import {load as yamlLoad} from "yaml-js";
 import generator from "@antora/site-generator-default";
 import browserSync from "browser-sync";
 
@@ -62,10 +62,7 @@ function serve(done) {
   server.init({
     server: {
       baseDir: "./gh-pages"
-    },
-    // Changes made here:
-    host: "192.168.1.164",
-    open: "external"
+    }
   });
   done();
 }
@@ -78,3 +75,4 @@ const _default = series(_clean, build, serve, siteWatch);
 export { _default as default };
 //build workshop docs
 const _wsite = series(_clean, workshopSite);
+export { _wsite as workshopSite };

@@ -1,7 +1,11 @@
-[#bgp-adm-metallb-bgp]
-== Architecture
+:sectnums!:
+:sectlinks:
+:doctype: book
 
-### MetalLB architecture in Layer 3 (BGP mode)
+[#bgp-adm-metallb-bgp]
+== 2. Architecture
+
+### 2.1. MetalLB architecture in Layer 3 (BGP mode)
 
 * The MetalLB architecture in Layer 3 (BGP mode) relies on the FRR (FRRouting) suite to instantiate the BGP Speaker PODs in the designated nodes within Red Hat OpenShift Virtualization.
 
@@ -54,7 +58,7 @@ _Figure 4 - Implementation of Network Address Translation to facilitate connecti
 
 image::Figure4-Implementation_of_Network_Address_Translation.jpg[width="100%", height="100%", align="left"]
 
-### Administration of the MetalLB IPAddressPools and External IP Address advertisement via BGP
+### 2.2. Administration of the MetalLB IPAddressPools and External IP Address advertisement via BGP
 
 * MetalLB can automatically allocate External IP addresses (IPv4 and IPv6), to OpenShift Virtualization services of type LoadBalancer, from any IP address pool where autoAssign is set to true (Figure 5).
 

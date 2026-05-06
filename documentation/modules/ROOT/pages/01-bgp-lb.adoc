@@ -30,7 +30,7 @@
 
 == The Solution
 
-### Implementing BGP Load Balancing infrastructure with MetalLB for OpenShift Virtualization
+// ### Implementing BGP Load Balancing infrastructure with MetalLB for OpenShift Virtualization
 
 * The BGP loadBalancer insfrastructure utilizes MetalLB in Layer 3 (BGP) mode as a foundational component.
 

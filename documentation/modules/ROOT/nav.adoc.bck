@@ -1,0 +1,15 @@
+:module: 0
+
+* xref:index.adoc[Implementing BGP Load Balancing infrastructure with MetalLB for OpenShift Virtualization]
+* xref:01-bgp-lb.adoc#bgp-lb[{counter:module}. Use cases]
+* xref:01-bgp-lb.adoc#_the_story_behind_this_solution_pattern[{counter:module}. The story behind this solution pattern]
+* xref:01-bgp-lb.adoc#_the_solution[{counter:module}. The Solution]
+* xref:01-bgp-lb.adoc#_implementing_bgp_load_balancing_infrastructure_with_metallb_for_openshift_virtualization[{module}.{counter:submodule1}. Implementing BGP Load Balancing infrastructure with MetalLB for OpenShift Virtualization]
+* xref:02-metallb-and-bgp#bgp-adm-metallb-bgp[{counter:module}. Architecture]
+* xref:02-metallb-and-bgp#_metallb_architecture_in_layer_3_bgp_mode[{module}.{counter:submodule2}. MetalLB architecture in Layer 3 (BGP mode)]
+* xref:02-metallb-and-bgp#_administration_of_the_metallb_ipaddresspools_and_external_ip_address_advertisement_via_bgp[{module}.{counter:submodule2}. Administration of the MetalLB IPAddressPools and External IP Address advertisement via BGP]
+* xref:03-bgp-lb-poc.adoc#bgp-lb-poc[{counter:module}. See the Solution in Action]
+* xref:03-bgp-lb-poc.adoc#_proof_of_concept_for_bgp_load_balancer_infrastructure[{module}.{counter:submodule0}. Proof-of-Concept for BGP load balancer infrastructure]
+* xref:04-bgp-lb-addendum.adoc#bgp-lb-addedum[{counter:module}. Developer Resources]
+* xref:04-bgp-lb-addendum.adoc#_addendum[{module}.{counter:submodule4}. Addendum: versions, notes and configurations related to this Proof-of-Concept]
+* https://redhat-solution-patterns.github.io/solution-patterns/patterns.html[Explore Red Hat Solution Patterns]
