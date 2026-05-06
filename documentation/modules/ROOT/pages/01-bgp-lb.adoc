@@ -11,7 +11,6 @@
 * *Geographic Traffic Optimization:* Directing traffic to the topologically nearest Red Hat OpenShift cluster via OSPF External Type 1 (E1) redistribution, enabling Zero-Touch convergence and automated site failover.
 
 * *TCO Optimization:* Significant reduction in Total Cost of Ownership by eliminating specialized load-balancing hardware and licensing, while streamlining Day 2 operations through unified network control plane management.
-Historically, network traffic relied on centralized hardware load balancers, creating architectural bottlenecks and significant operational costs.
 
 
 == The story behind this solution pattern
