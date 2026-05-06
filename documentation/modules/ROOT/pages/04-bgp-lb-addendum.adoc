@@ -1,8 +1,8 @@
 
 [#bgp-lb-addedum]
-== Addendum: version, notes and configuration version related to this Proof-of-Concept.
+== Developer Resources
 
-### Addendum.
+### Addendum: versions, notes and configurations related to this Proof-of-Concept
 
 [cols="2,3,1,5a"]
 |===

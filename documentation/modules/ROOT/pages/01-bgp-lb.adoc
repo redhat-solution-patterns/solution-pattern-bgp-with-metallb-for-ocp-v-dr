@@ -1,8 +1,37 @@
 
 [#bgp-lb]
-== Implementing BGP Load Balancing infrastructure with MetalLB to support disaster recovery strategies in OpenShift Virtualization.
 
-### MetalLB Layer 3 (BGP) as a foundational component.
+
+== Use cases.
+
+* *High-Performance Bare Metal Workloads:* Leveraging ECMP (Equal-Cost Multi-Path) to provide linear bandwidth scaling and eliminate hardware throughput bottlenecks.
+
+* *Next-Gen Telco & Edge Deployments:* Native Dual-Stack (IPv4/IPv6) support for 5G Core functions, ensuring high-throughput, low-latency traffic handling at the network edge.
+
+* *Geographic Traffic Optimization:* Directing traffic to the topologically nearest Red Hat OpenShift cluster via OSPF External Type 1 (E1) redistribution, enabling Zero-Touch convergence and automated site failover.
+
+* *TCO Optimization:* Significant reduction in Total Cost of Ownership by eliminating specialized load-balancing hardware and licensing, while streamlining Day 2 operations through unified network control plane management.
+Historically, network traffic relied on centralized hardware load balancers, creating architectural bottlenecks and significant operational costs.
+
+
+== The story behind this solution pattern
+
+* Historically, network traffic relied on centralized hardware load balancers, creating architectural bottlenecks and significant operational costs.
+
+* Transitioning to MetalLB Layer 3 (BGP), integrating load-balancing intelligence directly into the OpenShift Virtualization control plane, was identified as the path to modernize infrastructure with the following benefits:
+
+   ** By advertising Virtual IPs as NLRI (BGP), application endpoints are treated as native subnets with a significantly reduction of the Total Cost of Ownership (TCO).
+
+   ** Redistributing BGP routes into OSPF (or other IGPs) removes the "Full Mesh" iBGP requirement, allowing the infrastructure to scale horizontally without configuration bloat.
+
+   ** DR shifts to native network re-convergence
+
+   ** Dual-stack (IPv4/IPv6) compatible architecture based on a self-healing network fabric.
+
+
+== The Solution
+
+### Implementing BGP Load Balancing infrastructure with MetalLB for OpenShift Virtualization
 
 * The BGP loadBalancer insfrastructure utilizes MetalLB in Layer 3 (BGP) mode as a foundational component.
 
@@ -44,55 +73,4 @@ In such cases, different sets of IP Address Pools  are assigned to the MetalLB o
 _&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Figure 2 - Modernizing Business Continuity: from traditional Hardware Load Balancers to an Integrated, BGP load balancer architecture._
 
 image::Figure2-Modernizing_Business_Continuity.jpg[width="100%", height="100%", align="left"]
-
-* The MetalLB architecture in Layer 3 (BGP mode) relies on the FRR (FRRouting) suite to instantiate the BGP Speaker PODs in the designated nodes within Red Hat OpenShift Virtualization.
-
-* The objective of the MetalLB BGP Speakers is to advertise, to the external iBGP or eBGP peers (iBGP in this Proof Of Concept), the Network Layer Reachability Information (NLRI) related to the External IP addresses assigned to the LoadBalancer services.
-
-_Figure 3 - BGP Equal-Cost Multi-Path (ECMP)_
-
-image::Figure3-BGP_Equal_Cost_Multi-Paty-ECMP.jpg[[width="300%", height="500%", float="left"]
-
-
-{empty} +
-{empty} +
-{empty} +
-{empty} +
-{empty} +
-{empty} +
-{empty}
-
-* The BGP Equal-Cost Multi-Path (ECMP) feature (Figure 3), which allows for the distribution of traffic across multiple equal-cost paths to the same destination, along with BGP's failover capabilities, are critical components that enhance both the scalability and performance of a BGP solution.
-* Additionally, the reconvergence capabilities of routing protocols contribute significantly to the system resilience.
-
-{empty} +
-{empty} +
-{empty} +
-{empty} +
-{empty} +
-{empty} +
-{empty} +
-{empty} +
-{empty}
-
-* Bidirectional Forward Detection (BFD) plays a vital role in BGP performance by reducing the time required to detect network failures.
-BFD can identify failures within milliseconds, offering a substantial improvement over the standard keepalive timeout recommendations of 20 seconds specified in RFC 4271, with some third-party providers adopting longer timeouts such as 60 seconds.
-
-* The default configuration of the MetalLB BGP Speaker is to deny any Network Layer Reachability Information (NLRI) advertised by the BGP peers (external routers).
-
-* This posture presents a technical challenge regarding how to enable connectivity from internal endpoints behind the LoadBalancer services to remote subnets that are not directly connected to the Red Hat OpenShift Virtualization worker nodes.
-
-* The Network Address Translation (NAT) process implemented on the external router connected to the worker nodes of OpenShift Virtualization is one of the possible approaches for managing this type of network complexity (Figure 4) connected to the traditional Kubernetes networking where the MetalLB architecture in Layer 3 (BGP mode) speaker are involved.
-
-* An alternative approach for managing this complexity is available in this Red Hat blog post:
-https://www.redhat.com/en/blog/learning-kubernetes-nodes-networking-routes-via-bgp[Learning Kubernetes nodes networking routes via BGP]
-
-* Implementing user-defined networks (UDNs) in Red Hat OpenShift Virtualization using Virtual Routing and Forwarding (VRF), advertising them via BGP with FRRouting speakers, and injecting learned BGP prefixes back into the VRF creates an adaptable solution that makes entire user-defined networks (UDNs) prefixes, not just LoadBalancer service IPs, directly reachable from the customers network infrastructure.
-
-* This topic, related to user-defined networks (UDNs) exposed via BGP routing protocol, is extensively discussed in this article: 
-https://developers.redhat.com/articles/2025/10/23/exposing-openshift-networks-using-bgp#the_benefits_of_bgp_for_openshift_networking[Exposing OpenShift networks using BGP]
-
-_Figure 4 - Implementation of Network Address Translation to facilitate connectivity to remote subnets._
-
-image::Figure4-Implementation_of_Network_Address_Translation.jpg[width="100%", height="100%", align="left"]
 

@@ -1,7 +1,60 @@
 [#bgp-adm-metallb-bgp]
-== Administration of the MetalLB IPAddressPools and External IP Address advertisement via BGP.
+== Architecture
 
-### Administration of the MetalLB IPAddressPools and External IP Address advertisement via BGP.
+### MetalLB architecture in Layer 3 (BGP mode)
+
+* The MetalLB architecture in Layer 3 (BGP mode) relies on the FRR (FRRouting) suite to instantiate the BGP Speaker PODs in the designated nodes within Red Hat OpenShift Virtualization.
+
+* The objective of the MetalLB BGP Speakers is to advertise, to the external iBGP or eBGP peers (iBGP in this Proof Of Concept), the Network Layer Reachability Information (NLRI) related to the External IP addresses assigned to the LoadBalancer services.
+
+_Figure 3 - BGP Equal-Cost Multi-Path (ECMP)_
+
+image::Figure3-BGP_Equal_Cost_Multi-Paty-ECMP.jpg[[width="300%", height="500%", float="left"]
+
+
+{empty} +
+{empty} +
+{empty} +
+{empty} +
+{empty} +
+{empty} +
+{empty}
+
+* The BGP Equal-Cost Multi-Path (ECMP) feature (Figure 3), which allows for the distribution of traffic across multiple equal-cost paths to the same destination, along with BGP's failover capabilities, are critical components that enhance both the scalability and performance of a BGP solution.
+* Additionally, the reconvergence capabilities of routing protocols contribute significantly to the system resilience.
+
+{empty} +
+{empty} +
+{empty} +
+{empty} +
+{empty} +
+{empty} +
+{empty} +
+{empty} +
+{empty}
+
+* Bidirectional Forward Detection (BFD) plays a vital role in BGP performance by reducing the time required to detect network failures.
+BFD can identify failures within milliseconds, offering a substantial improvement over the standard keepalive timeout recommendations of 20 seconds specified in RFC 4271, with some third-party providers adopting longer timeouts such as 60 seconds.
+
+* The default configuration of the MetalLB BGP Speaker is to deny any Network Layer Reachability Information (NLRI) advertised by the BGP peers (external routers).
+
+* This posture presents a technical challenge regarding how to enable connectivity from internal endpoints behind the LoadBalancer services to remote subnets that are not directly connected to the Red Hat OpenShift Virtualization worker nodes.
+
+* The Network Address Translation (NAT) process implemented on the external router connected to the worker nodes of OpenShift Virtualization is one of the possible approaches for managing this type of network complexity (Figure 4) connected to the traditional Kubernetes networking where the MetalLB architecture in Layer 3 (BGP mode) speaker are involved.
+
+* An alternative approach for managing this complexity is available in this Red Hat blog post:
+https://www.redhat.com/en/blog/learning-kubernetes-nodes-networking-routes-via-bgp[Learning Kubernetes nodes networking routes via BGP]
+
+* Implementing user-defined networks (UDNs) in Red Hat OpenShift Virtualization using Virtual Routing and Forwarding (VRF), advertising them via BGP with FRRouting speakers, and injecting learned BGP prefixes back into the VRF creates an adaptable solution that makes entire user-defined networks (UDNs) prefixes, not just LoadBalancer service IPs, directly reachable from the customers network infrastructure.
+
+* This topic, related to user-defined networks (UDNs) exposed via BGP routing protocol, is extensively discussed in this article: 
+https://developers.redhat.com/articles/2025/10/23/exposing-openshift-networks-using-bgp#the_benefits_of_bgp_for_openshift_networking[Exposing OpenShift networks using BGP]
+
+_Figure 4 - Implementation of Network Address Translation to facilitate connectivity to remote subnets._
+
+image::Figure4-Implementation_of_Network_Address_Translation.jpg[width="100%", height="100%", align="left"]
+
+### Administration of the MetalLB IPAddressPools and External IP Address advertisement via BGP
 
 * MetalLB can automatically allocate External IP addresses (IPv4 and IPv6), to OpenShift Virtualization services of type LoadBalancer, from any IP address pool where autoAssign is set to true (Figure 5).
 
