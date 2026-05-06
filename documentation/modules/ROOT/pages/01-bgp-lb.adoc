@@ -45,7 +45,7 @@ _This approach does not support VMs connected directly to customer VLANs where B
 
 * MetalLB advertises external IP addresses as Network Layer Reachability Information (NLRI composed by Network Prefix and Network Length) to the network's control plane via BGP.
 
-* This feature facilitates the deployment of scalable, highly available network services, including those based on dual-stack (IPv4 and IPv6)."
+* This feature facilitates the deployment of scalable, highly available network services, including those based on dual-stack (IPv4 and IPv6).
 
 * The implementation of a Disaster Recovery architecture based on MetalLB in Layer 3 mode (BGP mode) offers a cost-effective alternative to traditional hardware load balancing solutions.
 
