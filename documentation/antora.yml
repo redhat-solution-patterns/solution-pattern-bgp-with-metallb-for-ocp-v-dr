@@ -1,5 +1,5 @@
 name: solution-pattern-bgp-with-metallb-for-ocp-v-dr
-title: solution-pattern-bgp-with-metallb-for-ocp-v-dr
+title: Implementing BGP Load Balancing infrastructure with MetalLB for OpenShift Virtualization
 version: master
 nav:
   - modules/ROOT/nav.adoc
