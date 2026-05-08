@@ -10,7 +10,7 @@
 * The objective of this *Proof of Concept* is to transition traffic routing intelligence from physical hardware to the software-defined network control plane. 
 * By designating ExternalIPAddresses of the loadBalancer services (MetalLB Layer3) as BGP endpoints, the system can automatically re-route traffic in the event of site failures or service disruptions, thereby establishing a cost-effective and scalable framework for modern disaster recovery.
 
-*Contributors:* Riccardo Bruzzone (Senior Technical Accaunt Manager) and Daniele Nessilli (Technical Accaunt Manager)
+*Contributors:* Riccardo Bruzzone (Senior Technical Account Manager) and Daniele Nessilli (Technical Account Manager)
 
 ++++
 <br>
