@@ -3,9 +3,9 @@
 
 * xref:index.adoc[{counter:module}. Home Page]
 
-** xref:01-bgp-lb.adoc#bgp-lb[{module}.1. Use Cases]
-** xref:01-bgp-lb.adoc#_the_story_behind_this_solution_pattern[{module}.2. The story behind this solution pattern]
-** xref:01-bgp-lb.adoc#_the_solution[{module}.3. The Solution]
+** xref:01-bgp-lb.adoc#_1_1_use_cases[{module}.1. Use Cases]
+** xref:01-bgp-lb.adoc#_1_2_the_story_behind_this_solution_pattern[{module}.2. The story behind this solution pattern]
+** xref:01-bgp-lb.adoc#_1_3_the_solution[{module}.3. The Solution]
 // ** xref:01-bgp-lb.adoc#_implementing_bgp_load_balancing_infrastructure_with_metallb_for_openshift_virtualization[{module}.3. Implementation Details]
 
 * xref:02-metallb-and-bgp.adoc#bgp-adm-metallb-bgp[{counter:module}. Architecture]
@@ -25,4 +25,6 @@
 
 * https://redhat-solution-patterns.github.io/solution-patterns/patterns.html[Explore Red Hat Solution Patterns]
 
-http://192.168.1.164:3004/solution-pattern-bgp-with-metallb-for-ocp-v-dr/03-bgp-lb-poc.html#_3_1_4_restore_process_on_dr_cluster
+
+
+
