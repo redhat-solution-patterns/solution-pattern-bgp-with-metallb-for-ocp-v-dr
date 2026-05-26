@@ -1,9 +1,10 @@
+= Implementing BGP Load Balancing infrastructure with MetalLB for OpenShift Virtualization
+:page-title: Implementing BGP Load Balancing infrastructure with MetalLB for OpenShift Virtualization
 :sectnums!:
 :page-toclevels: 3
 :sectlinks:
 :doctype: book
-= Implementing BGP Load Balancing infrastructure with MetalLB for OpenShift Virtualization
-:page-title: Implementing BGP Load Balancing infrastructure with MetalLB for OpenShift Virtualization
+
 [#bgp-lb-poc]
 == 3. See the Solution in Action
 
