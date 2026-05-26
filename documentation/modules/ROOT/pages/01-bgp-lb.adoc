@@ -1,5 +1,4 @@
 = Implementing BGP Load Balancing infrastructure with MetalLB for OpenShift Virtualization
-
 [#bgp-lb]
 
 
