@@ -1,7 +1,7 @@
 :module: 0
 :submodule: 0
 
-* xref:index.adoc[Implementing BGP Load Balancing infrastructure with MetalLB for OpenShift Virtualization]
+* xref:index.adoc[Proof Of Concept scope]
 * xref:01-bgp-lb.adoc#bgp-lb[{counter:module}. Home Page]
 ** xref:01-bgp-lb.adoc#_1_1_use_cases[{module}.1. Use Cases]
 ** xref:01-bgp-lb.adoc#_1_2_the_story_behind_this_solution_pattern[{module}.2. The story behind this solution pattern]
