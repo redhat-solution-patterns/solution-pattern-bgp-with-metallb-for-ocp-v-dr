@@ -3,6 +3,8 @@
 :sectlinks:
 :doctype: book
 
+= Implementing BGP Load Balancing infrastructure with MetalLB for OpenShift Virtualization
+
 [#bgp-lb-poc]
 == 3. See the Solution in Action
 
