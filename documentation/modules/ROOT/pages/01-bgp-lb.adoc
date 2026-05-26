@@ -1,9 +1,12 @@
-= Implementing BGP Load Balancing infrastructure with MetalLB for OpenShift Virtualization
 :page-title: Implementing BGP Load Balancing infrastructure with MetalLB for OpenShift Virtualization
+:sectnums!:
+:sectlinks:
+:doctype: book
+
 [#bgp-lb]
+== 1. Home Page
 
-
-== Use cases.
+### 1.1 Use cases
 
 * *High-Performance Bare Metal Workloads:* Leveraging ECMP (Equal-Cost Multi-Path) to provide linear bandwidth scaling and eliminate hardware throughput bottlenecks.
 
@@ -14,7 +17,7 @@
 * *TCO Optimization:* Significant reduction in Total Cost of Ownership by eliminating specialized load-balancing hardware and licensing, while streamlining Day 2 operations through unified network control plane management.
 
 
-== The story behind this solution pattern
+### 1.2 The story behind this solution pattern
 
 * Historically, network traffic relied on centralized hardware load balancers, creating architectural bottlenecks and significant operational costs.
 
@@ -29,7 +32,7 @@
    ** Dual-stack (IPv4/IPv6) compatible architecture based on a self-healing network fabric.
 
 
-== The Solution
+### 1.3 The Solution
 
 // ### Implementing BGP Load Balancing infrastructure with MetalLB for OpenShift Virtualization
 
