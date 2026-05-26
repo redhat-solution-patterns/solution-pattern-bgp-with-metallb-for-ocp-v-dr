@@ -1,9 +1,8 @@
 :sectnums!:
 :sectlinks:
 :doctype: book
-
 = Implementing BGP Load Balancing infrastructure with MetalLB for OpenShift Virtualization
-
+:page-title: Implementing BGP Load Balancing infrastructure with MetalLB for OpenShift Virtualization
 [#bgp-lb-addedum]
 == 4. Developer Resources
 
