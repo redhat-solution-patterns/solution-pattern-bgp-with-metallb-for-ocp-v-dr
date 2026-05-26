@@ -2,7 +2,7 @@
 
 This is a template used to generate new solution pattern pages with the same look and feel of the existing solution patterns and https://redhat-solution-patterns.github.io/[main page] .
 
-What's in this doc:
+What's in this doc:-
 
 * <<How to create a new solution pattern page>> 
 * <<Development Quickstart>>
