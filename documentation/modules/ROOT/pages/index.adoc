@@ -19,7 +19,7 @@
 == Getting Started
 
 * Welcome to the Red Hat Solution Pattern. 
-* Please use the navigation menu on the left or click `Next` below to proceed through the solution `Implementing BGP Load Balancing Infrastructure with MetalLB for OpenShift Virtualization`.
+* Please use the navigation menu on the left or click "Next" below to proceed through the solution (Implementing BGP Load Balancing Infrastructure with MetalLB for OpenShift Virtualization*.
 
 // [#bgp-lb]
 //
