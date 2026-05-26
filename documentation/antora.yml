@@ -5,3 +5,7 @@ nav:
   - modules/ROOT/nav.adoc
 
 start_page: ROOT:index.adoc
+
+asciidoc:
+  attributes:
+    page-title: "Implementing BGP Load Balancing infrastructure with MetalLB for OpenShift Virtualization"
