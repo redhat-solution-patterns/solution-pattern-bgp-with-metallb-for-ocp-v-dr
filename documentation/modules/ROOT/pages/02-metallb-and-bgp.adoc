@@ -3,7 +3,6 @@
 :doctype: book
 = Implementing BGP Load Balancing infrastructure with MetalLB for OpenShift Virtualization
 :page-title: Implementing BGP Load Balancing infrastructure with MetalLB for OpenShift Virtualization
-
 [#bgp-adm-metallb-bgp]
 == 2. Architecture
 
