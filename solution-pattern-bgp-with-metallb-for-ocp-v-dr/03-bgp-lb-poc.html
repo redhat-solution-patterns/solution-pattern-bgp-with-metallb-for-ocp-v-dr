@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Implementing BGP Load Balancing infrastructure with MetalLB for OpenShift Virtualization :: BGP LB infrastructure with MetalLB for OpenShift Virtualization in DR</title>
+    <link rel="canonical" href="https://redhat-solution-patterns.github.io/solution-patterns/solution-pattern-bgp-with-metallb-for-ocp-v-dr/03-bgp-lb-poc.html">
+    <link rel="prev" href="02-metallb-and-bgp.html#bgp-adm-metallb-bgp">
+    <link rel="next" href="04-bgp-lb-addendum.html#bgp-lb-addedum">
+    <meta name="generator" content="Antora 3.0.0">
+    <link rel="stylesheet" href="../_/css/site.css">
+<link rel="icon" href="../_/img/favicon.ico" type="image/x-icon">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" style="font-size: 20px; color: white"
+        href="https://redhat-solution-patterns.github.io/solution-patterns">
+        <img src="../_/img/logo.png" height="35px" alt="Solution Patterns">&nbsp; BGP LB infrastructure with MetalLB for OpenShift Virtualization in DR</a>
+      <button class="navbar-burger" data-target="topbar-nav">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <div class="navbar-item has-dropdown is-hoverable">
+          <a class="navbar-link" href="#">Architectures &amp; Patterns</a>
+          <div class="navbar-dropdown">
+            <a class="navbar-item" href="https://www.redhat.com/architect/portfolio/" target="_blank">Portfolio Architecture&nbsp; </a>
+            <a class="navbar-item" href="https://redhat-solution-patterns.github.io/solution-patterns/patterns.html"  target="_blank">Solution Patterns </a>
+            <a class="navbar-item" href="https://validatedpatterns.io/" target="_blank">Validated Patterns&nbsp;</a>
+            <a class="navbar-item" href="https://catalog.redhat.com/solutions" target="_blank">Ecosystem Solutions&nbsp;</a>
+          </div>
+        </div>
+
+        <div class="navbar-item has-dropdown is-hoverable">
+          <a class="navbar-link" href="#">Resources</a>
+          <div class="navbar-dropdown">
+            <a class="navbar-item" target="_blank" href="https://developers.redhat.com">Red Hat Developers</a>
+            <a class="navbar-item" target="_blank" href="https://developers.redhat.com/app-dev-platform">App Dev Platform</a>
+            <a class="navbar-item" target="_blank" href="https://www.redhat.com/en/products/application-foundations">Red Hat Application Services</a>
+          </div>
+        </div>
+
+          <a class="navbar-item" target="_blank" href="https://github.com/redhat-solution-patterns/redhat-solution-patterns.github.io/issues">Feedback</a>
+          <a class="navbar-item" target="_blank" href="https://redhat-solution-patterns.github.io/solution-patterns/contributors-guide.html">Contribute</a>
+
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="solution-pattern-bgp-with-metallb-for-ocp-v-dr" data-version="master">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <h3 class="title"><a href="index.html" class=" query-params-link">Implementing BGP Load Balancing infrastructure with MetalLB for OpenShift Virtualization</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="index.html">1. Home Page</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="01-bgp-lb.html#bgp-lb">1.1. Use Cases</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="01-bgp-lb.html#_the_story_behind_this_solution_pattern">1.2. The story behind this solution pattern</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="01-bgp-lb.html#_the_solution">1.3. The Solution</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="02-metallb-and-bgp.html#bgp-adm-metallb-bgp">2. Architecture</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="02-metallb-and-bgp.html#_2_1_metallb_architecture_in_layer_3_bgp_mode">2.1. MetalLB architecture in Layer 3 (BGP mode)</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="02-metallb-and-bgp.html#_2_2_administration_of_the_metallb_ipaddresspools_and_external_ip_address_advertisement_via_bgp">2.2. Administration of IPAddressPools and BGP</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="#bgp-lb-poc">3. See the Solution in Action</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="#_3_1_proof_of_concept_for_bgp_load_balancer_infrastructure">3.1. Proof-of-Concept Infrastructure</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="#_3_1_1_initial_situation">3.1.1. Initial situation</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="#_3_1_2_recovery_prerequisite">3.1.2. Recovery prerequisite</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="#_3_1_3_primary_cluster_isolation">3.1.3. Primary cluster isolation</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="#_3_1_4_restore_process_on_dr_cluster">3.1.4. Restore process on DR cluster</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="#_3_1_5_external_ip_address_reachability_restored">3.1.5. External IP address reachability restored</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="04-bgp-lb-addendum.html#bgp-lb-addedum">4. Developer Resources</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="04-bgp-lb-addendum.html#_4_1_addendum">4.1. Addendum: Versions and Configurations</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="https://redhat-solution-patterns.github.io/solution-patterns/patterns.html">Explore Red Hat Solution Patterns</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">Implementing BGP Load Balancing infrastructure with MetalLB for OpenShift Virtualization</span>
+    <span class="version">master</span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <span class="title">Implementing BGP Load Balancing infrastructure with MetalLB for OpenShift Virtualization</span>
+      <ul class="versions">
+        <li class="version is-current">
+          <a href="index.html">master</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="index.html">Implementing BGP Load Balancing infrastructure with MetalLB for OpenShift Virtualization</a></li>
+    <li><a href="#bgp-lb-poc">3. See the Solution in Action</a></li>
+  </ul>
+</nav>
+  <div class="edit-this-page"><a href="https://github.com/redhat-solution-patterns/solution-pattern-bgp-with-metallb-for-ocp-v-dr/edit/main/documentation/modules/ROOT/pages/03-bgp-lb-poc.adoc">Edit this Page</a></div>
+  </div>
+  <div class="content">
+<article class="doc">
+<h1 class="page">Implementing BGP Load Balancing infrastructure with MetalLB for OpenShift Virtualization</h1>
+<div class="sect1">
+<h2 id="bgp-lb-poc"><a class="anchor" href="#bgp-lb-poc"></a><a class="link" href="#bgp-lb-poc">3. See the Solution in Action</a></h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_3_1_proof_of_concept_for_bgp_load_balancer_infrastructure"><a class="anchor" href="#_3_1_proof_of_concept_for_bgp_load_balancer_infrastructure"></a><a class="link" href="#_3_1_proof_of_concept_for_bgp_load_balancer_infrastructure">3.1. Proof-of-Concept for BGP load balancer infrastructure</a></h3>
+<div class="ulist">
+<ul>
+<li>
+<p>The infrastructure for this Proof-of-Concept is based on the network topology illustrated in Figure 7 and the configurations detailed in the addendum section located at the end of this document.</p>
+</li>
+</ul>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+<div class="ulist">
+<ul>
+<li>
+<p>The process of recovering Virtual Machines from the primary OpenShift Virtualization cluster to the Disaster Recovery (DR) cluster is outside the scope of this Proof of Concept.</p>
+</li>
+<li>
+<p>The primary focus of this demonstration is to showcase how the BGP protocol can streamline the Disaster Recovery architecture and procedures through the reconvergence capabilities of the routing protocols involved.</p>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_3_1_1_initial_situation"><a class="anchor" href="#_3_1_1_initial_situation"></a><a class="link" href="#_3_1_1_initial_situation">3.1.1. <strong>Initial situation</strong></a></h4>
+<div class="ulist">
+<ul>
+<li>
+<p>The virtual machine rhel8-server is running on hub-worker01.ocp4-hub.test.com, first worker node of the primary OpenShift Virtualization cluster (Figure 7), exposing the HTTP and SSH services via 192.11.1.100/32 External IP address advertised via MetalLB Layer 3 (BGP mode) to the external rtr-frr01-hub router.</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>  [root@hub-ocp-bastion-server ~]# oc get vm
+  NAME           AGE   STATUS    READY
+  rhel8-server   14d   Running   True
+
+  [root@hub-ocp-bastion-server ~]# oc get pod -o wide
+  NAME                               READY   STATUS    RESTARTS   AGE   IP            NODE                             NOMINATED NODE   READINESS GATES
+  virt-launcher-rhel8-server-prl2q   2/2     Running   0          66m   10.128.2.13   hub-worker01.ocp4-hub.test.com   &lt;none&gt;           1/1</pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>  [root@hub-ocp-bastion-server ~]# oc get endpoints rhel8-server-01-manual-svc
+  NAME                         ENDPOINTS                       AGE
+  rhel8-server-01-manual-svc   10.128.2.13:80,10.128.2.13:22   3m23</pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>  [root@hub-ocp-bastion-server ~]# oc get services
+  NAME                         TYPE           CLUSTER-IP       EXTERNAL-IP    PORT(S)                           AGE
+  headless                     ClusterIP      None             &lt;none&gt;         5434/TCP                          29d
+  rhel8-server-01-manual-svc   LoadBalancer   172.30.145.246   192.11.1.100   22000:31214/TCP,22080:31217/TCP   3m16s</pre>
+</div>
+</div>
+<div class="paragraph">
+<p><em>Figure 7 - Environment for Proof-of-Concept on BGP load balancer infrastructure to support Disaster Recovery for OpenShift Virtualization</em></p>
+</div>
+<div class="imageblock text-left">
+<div class="content">
+<img src="_images/Figure7-Environment_for_Proof-of-Concept.jpg" alt="Figure7 Environment for Proof of Concept" width="100%" height="100%">
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Based on the MetalLB configuration implemented during the initial setup of the primary OpenShift Virtualization cluster (please refer to the supplemental configuration details provided at the end of this document), the BGP speakers are running on the worker nodes:</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>  [root@hub-ocp-bastion-server ~]# oc get nodes -l app=metallb-worker
+  NAME                             STATUS   ROLES               AGE   VERSION
+  hub-worker01.ocp4-hub.test.com   Ready    BGPspeaker,worker   29d   v1.32.8
+  hub-worker02.ocp4-hub.test.com   Ready    BGPspeaker,worker   29d   v1.32.8
+
+  [root@hub-ocp-bastion-server ~]# oc get pods -o wide | grep -E 'worker01|worker02' | sort -k 7
+  frr-k8s-zmqsf                            7/7     Running   0               7m34s   192.168.100.21   hub-worker01.ocp4-hub.test.com   &lt;none&gt;           &lt;none&gt;
+  frr-k8s-9jzl9                            7/7     Running   0               7m34s   192.168.100.22   hub-worker02.ocp4-hub.test.com   &lt;none&gt;           &lt;none&gt;</pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Both MalLB BGP speaker are advertising the 192.11.1.100/32 External IP address as Network Layer Reachability Information (NLRI) to the rtr-frr01-hub, as demonstrated in the details below related to the BGP speaker running on hub-worker01.ocp4-hub.test.com:</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>  #------------------------------------ frr-k8s-zmqsf ------------------------------#
+
+  # BGP summary and routes advertised
+  IPv4 Unicast Summary (VRF default):
+  BGP router identifier 192.168.100.21, local AS number 65008 vrf-id 0
+  BGP table version 1
+  RIB entries 1, using 192 bytes of memory
+  Peers 1, using 725 KiB of memory
+  Neighbor        V         AS   MsgRcvd   MsgSent   TblVer  InQ OutQ  Up/Down State/PfxRcd   PfxSnt Desc
+  192.100.1.254   4      65008      3994      3993        0    0    0 01:06:28            0        1 N/A
+  Total number of neighbors 1
+
+  # BGP advertised routes
+  BGP table version is 1, local router ID is 192.168.100.21, vrf id 0
+  Default local pref 100, local AS 65008
+  Status codes:  s suppressed, d damped, h history, * valid, &gt; best, = multipath,
+                 i internal, r RIB-failure, S Stale, R Removed
+  Nexthop codes: @NNN nexthop's vrf id, &lt; announce-nh-self
+  Origin codes:  i - IGP, e - EGP, ? - incomplete
+  RPKI validation codes: V valid, I invalid, N Not found
+      Network          Next Hop            Metric LocPrf Weight Path
+   *&gt; 192.11.1.100/32  0.0.0.0                  0    100  32768 i
+  Total number of prefixes 1
+
+  # Route-map with OUT direction (to the external router)
+  ip address prefix-list 192.100.1.254-pl-ipv4
+     seq 1 permit 192.11.1.100/32
+  # Route-map with IN direction (from the external router)
+  ip address prefix-list 192.100.1.254-inpl-ipv4
+     seq 1 deny any</pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>As a result of the Network Layer Reachability Information (NLRI) associated with the external IP address 192.11.1.100/32, which is advertised by the MetalLB BGP speakers, the router rtr-frr01-hub (connected directly to the worker nodes of the Primary OpenShift Virtualization cluster) will recognize two equal-cost paths to reach the prefix 192.11.1.100/32:</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>  rtr-frr01-hub# show ip route bgp
+  Codes: K - kernel route, C - connected, L - local, S - static,
+         R - RIP, O - OSPF, I - IS-IS, B - BGP, E - EIGRP, N - NHRP,
+         T - Table, A - Babel, F - PBR, f - OpenFabric,
+         t - Table-Direct,
+         &gt; - selected route, * - FIB route, q - queued, r - rejected, b - backup
+         t - trapped, o - offload failure
+
+  IPv4 unicast VRF default:
+  B&gt;  192.11.1.100/32 [200/0] via 192.100.1.221 (recursive), weight 1, 01:21:15
+    *                           via 192.100.1.221, eth1 onlink, weight 1, 01:21:15
+                              via 192.100.1.222 (recursive), weight 1, 01:21:15
+    *                           via 192.100.1.222, eth1 onlink, weight 1, 01:21:15</pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The prefix 192.11.1.100/32, learned via iBGP, will be sequentially redistributed by the rtr-frr01-hub router into the OSPF routing protocol and advertised to the rtr-frr02-access as an External E2 route.</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>  rtr-frr02-access# show ip ospf database external
+         OSPF Router with ID (99.100.2.2)
+                  AS External Link States
+
+    LS age: 153
+    Options: 0x2  : *|-|-|-|-|-|E|-
+    LS Flags: 0x6
+    LS Type: AS-external-LSA
+    Link State ID: 192.11.1.100 (External Network Number)
+    Advertising Router: 99.100.1.1
+    LS Seq Number: 80000001
+    Checksum: 0xe3db
+    Length: 36
+
+    Network Mask: /32
+          Metric Type: 2 (Larger than any link state path)
+          TOS: 0
+          Metric: 20
+          Forward Address: 192.100.1.221
+          External Route Tag: 0</pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>  rtr-frr02-access# show ip route ospf
+  Codes: K - kernel route, C - connected, L - local, S - static,
+         R - RIP, O - OSPF, I - IS-IS, B - BGP, E - EIGRP, N - NHRP,
+         T - Table, A - Babel, F - PBR, f - OpenFabric,
+         t - Table-Direct,
+         &gt; - selected route, * - FIB route, q - queued, r - rejected, b - backup
+         t - trapped, o - offload failure
+
+  IPv4 unicast VRF default:
+  O&gt;* 192.11.1.100/32 [110/20] via 199.10.1.254, eth0, weight 1, 00:02:49
+  O&gt;* 192.100.1.0/24 [110/20] via 199.10.1.254, eth0, weight 1, 00:12:08
+  O   192.111.100.0/24 [110/10] is directly connected, eth2, weight 1, 00:12:55
+  O   192.168.150.0/24 [110/10] is directly connected, eth1, weight 1, 00:12:55
+  O&gt;* 192.200.1.0/24 [110/20] via 199.10.1.252, eth0, weight 1, 00:12:08
+  O   199.10.1.0/24 [110/10] is directly connected, eth0, weight 1, 00:12:08</pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Performing a basic end-to-end test, “VM Client” acting as  application consumer connected to the rtr-frr03-access router was able to connect to the HTTP test service hosted on the virtual Machine rhel8-server, which is currently running on hub-worker01.ocp4-hub.test.com (a worker node within the Primary OpenShift Virtualization cluster).</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>   [admin@vm-server ~]$ tracepath -m8 192.11.1.100
+   1?: [LOCALHOST]                      pmtu 1500
+   1:  rtr-frr02-access                                      0.448ms
+   1:  rtr-frr02-access                                      0.240ms
+   2:  rtr-frr01-hub                                         0.696ms
+   3:  primary-ocp-worker02                                  1.214ms
+         …. omitted …
+
+  [admin@vm-server ~]$ curl -Is http://192.11.1.100:22080 | head -n 1
+  HTTP/1.1 200 OK
+  [admin@vm-server ~]$</pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_3_1_2_recovery_prerequisite"><a class="anchor" href="#_3_1_2_recovery_prerequisite"></a><a class="link" href="#_3_1_2_recovery_prerequisite">3.1.2. <strong>Recovery prerequisite</strong></a></h4>
+<div class="ulist">
+<ul>
+<li>
+<p>The availability of the latest full backup, or point-in-time (PIT) backups if applicable, of the virtual machine resources associated with rhel8-server stored externally from the primary OpenShift Virtualization cluster, along with the ability to restore these resources in the disaster recovery (DR) OpenShift Virtualization environment, is a prerequisite for this demonstration, as illustrated in Figure 8.</p>
+</li>
+<li>
+<p>In this context, OpenShift-ADP was utilized to create a full backup of the rhel8-server virtual machine from the primary OpenShift Virtualization cluster and to restore it within the DR OpenShift Virtualization environment during the recovery process described below.</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>  # cat backup-vm-bgp-datamover.yaml
+  apiVersion: velero.io/v1
+  kind: Backup
+  metadata:
+    name: vm-gvp-namespace-backup
+    namespace: openshift-adp
+  spec:
+    snapshotMoveData: true
+    includedNamespaces:
+      - vm-bgp
+    storageLocation: dpa-ocp-virt-1
+
+  [root@hub-ocp-bastion-server ocp-script-yaml-dr]# oc create -f backup-vm-bgp-datamover.yaml
+  backup.velero.io/vm-gvp-namespace-backup created
+
+  [root@hub-ocp-bastion-server ~]# velero backup get -n openshift-adp
+  NAME                      STATUS      ERRORS   WARNINGS   CREATED                         EXPIRES   STORAGE LOCATION   SELECTOR
+  vm-gvp-namespace-backup   Completed   0        0          2025-10-25 04:04:29 -0400 EDT   29d       dpa-ocp-virt-1     &lt;none&gt;</pre>
+</div>
+</div>
+<div class="paragraph">
+<p><em>Figure 8 - S3 Infrastructure to support Virtual Machine Backup &amp; Restore via OpenShift APIs for Data Protection (OADP)</em></p>
+</div>
+<div class="imageblock text-left">
+<div class="content">
+<img src="_images/Figure8-S3_infrastructure.jpg" alt="Figure8 S3 infrastructure" width="50%" height="50%">
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_3_1_3_primary_cluster_isolation"><a class="anchor" href="#_3_1_3_primary_cluster_isolation"></a><a class="link" href="#_3_1_3_primary_cluster_isolation">3.1.3. <strong>Primary cluster isolation</strong></a></h4>
+<div class="ulist">
+<ul>
+<li>
+<p>After isolating the Primary OpenShift Virtualization environment (which involved disabling the external router interface, as indicated in Figure 9), the VM client experiences a loss of connectivity towards the external IP address of the virtual machine rhel8-server.</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>  [admin@vm-server ~]$ tracepath -m8 192.11.1.100
+  1?: [LOCALHOST]                      pmtu 1500
+  1:  rtr-frr02-access                                      0.527ms
+  1:  rtr-frr02-access                                      0.352ms
+  2:  no reply
+  3:  no reply
+  4:  no reply
+  5:  no reply
+  6:  no reply
+  7:  no reply
+  8:  no reply</pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The external IP address of the virtual machine rhel8-server will be accessible again once the restoration procedures are completed and the OSPF and BGP protocols have reconverged to direct traffic to the DR OpenShift Virtualization cluster.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><em>Figure 9 - Virtual Machine fail over on DR OpenShift Virtualization Clusters</em></p>
+</div>
+<div class="imageblock text-left">
+<div class="content">
+<img src="_images/Figure9-Virtual_Machine_fail_over_on_DR.jpg" alt="Figure9 Virtual Machine fail over on DR" width="100%" height="100%">
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_3_1_4_restore_process_on_dr_cluster"><a class="anchor" href="#_3_1_4_restore_process_on_dr_cluster"></a><a class="link" href="#_3_1_4_restore_process_on_dr_cluster">3.1.4. <strong>Restore process on DR cluster</strong></a></h4>
+<div class="ulist">
+<ul>
+<li>
+<p>Following the completion of the restore process on the DR OpenShift Virtualization cluster, the virtual machine rhel8-server has been successfully restored and reassigned to the same external IP address previously utilized in the primary cluster:</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>  # cat restore-vm-bgp-datamover.yaml
+  apiVersion: velero.io/v1
+  kind: Restore
+  metadata:
+    name: vm-gvp-namespace-restore
+    namespace: openshift-adp
+  spec:
+    backupName: vm-gvp-namespace-backup
+    restorePVs: true
+
+  [root@dr-ocp-bastion-server ~]# oc create -f restore-vm-bgp-datamover.yaml
+  restore.velero.io/vm-gvp-namespace-restore created</pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>  [root@dr-ocp-bastion-server ~]# velero get restores -n openshift-adp
+  NAME                       BACKUP                    STATUS      STARTED                         COMPLETED                       ERRORS   WARNINGS   CREATED                         SELECTOR
+  vm-gvp-namespace-restore   vm-gvp-namespace-backup   Completed   2025-10-25 05:06:14 -0400 EDT   2025-10-25 05:13:23 -0400 EDT   0        15         2025-10-25 05:06:14 -0400 EDT   &lt;none&gt;</pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>  [root@dr-ocp-bastion-server ~]# oc project vm-bgp
+  Now using project "vm-bgp" on server "https://api.ocp4-dr.test.com:6443".
+  [root@dr-ocp-bastion-server ~]# oc get vm
+  NAME           AGE    STATUS    READY
+  rhel8-server   8m5s   Running   True
+
+  [root@dr-ocp-bastion-server ~]# oc get service
+  NAME                         TYPE           CLUSTER-IP       EXTERNAL-IP    PORT(S)                           AGE
+  headless                     ClusterIP      None             &lt;none&gt;         5434/TCP                          9m49s
+  rhel8-server-01-manual-svc   LoadBalancer   172.31.111.216   192.11.1.100   22000:31214/TCP,22080:31217/TCP   9m49s</pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_3_1_5_external_ip_address_reachability_restored"><a class="anchor" href="#_3_1_5_external_ip_address_reachability_restored"></a><a class="link" href="#_3_1_5_external_ip_address_reachability_restored">3.1.5. <strong>External IP address reachability restored</strong></a></h4>
+<div class="ulist">
+<ul>
+<li>
+<p>Restoring the virtual machine objects in the Disaster Recovery OpenShift Virtualization cluster, the External IP Address 192.11.1.100/32 is now being re-advertised, this time towards rtr-frr03-dr (the router connected to the DR OpenShift Virtualization cluster).</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>  rtr-frr03-dr# show ip bgp sum
+
+  IPv4 Unicast Summary:
+  BGP router identifier 99.100.3.3, local AS number 65008 VRF default vrf-id 0
+  BGP table version 4
+  RIB entries 5, using 640 bytes of memory
+  Peers 2, using 47 KiB of memory
+  Peer groups 1, using 64 bytes of memory
+
+  Neighbor        V         AS   MsgRcvd   MsgSent   TblVer  InQ OutQ  Up/Down State/PfxRcd   PfxSnt Desc
+  192.200.1.221   4      65008      5907      5908        4    0    0 01:38:22            1        2 N/A
+  192.200.1.222   4      65008      5912      5915        4    0    0 01:38:17            1        2 N/A
+
+  Total number of neighbors 2</pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>  rtr-frr03-dr# show ip route bgp
+  Codes: K - kernel route, C - connected, L - local, S - static,
+         R - RIP, O - OSPF, I - IS-IS, B - BGP, E - EIGRP, N - NHRP,
+         T - Table, A - Babel, F - PBR, f - OpenFabric,
+         t - Table-Direct,
+         &gt; - selected route, * - FIB route, q - queued, r - rejected, b - backup
+         t - trapped, o - offload failure
+
+  IPv4 unicast VRF default:
+  B&gt;  192.11.1.100/32 [200/0] via 192.200.1.221 (recursive), weight 1, 00:07:27
+    *                           via 192.200.1.221, eth1 onlink, weight 1, 00:07:27
+                              via 192.200.1.222 (recursive), weight 1, 00:07:27
+    *                           via 192.200.1.222, eth1 onlink, weight 1, 00:07:27</pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The topology modification resulting from the restoration of virtual machine objects within the DR OpenShift Virtualization cluster has caused reconvergence of the OSPF instance operating on rtr-frr02-access.</p>
+</li>
+<li>
+<p>The External IP Address is now accessible via the rtr-frr03-dr router connected to the DR OpenShift Virtualization cluster.</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>  rtr-frr02-access# show ip ospf database external
+       OSPF Router with ID (99.100.2.2)
+                AS External Link States
+
+  LS age: 27
+  Options: 0x2  : *|-|-|-|-|-|E|-
+  LS Flags: 0x6
+  LS Type: AS-external-LSA
+  Link State ID: 192.11.1.100 (External Network Number)
+  Advertising Router: 99.100.3.3
+  LS Seq Number: 80000002
+  Checksum: 0x7cd9
+  Length: 36
+
+  Network Mask: /32
+        Metric Type: 2 (Larger than any link state path)
+        TOS: 0
+        Metric: 20
+        Forward Address: 192.200.1.221
+        External Route Tag: 0</pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>  rtr-frr02-access# show ip route ospf
+  Codes: K - kernel route, C - connected, L - local, S - static,
+         R - RIP, O - OSPF, I - IS-IS, B - BGP, E - EIGRP, N - NHRP,
+         T - Table, A - Babel, F - PBR, f - OpenFabric,
+         t - Table-Direct,
+         &gt; - selected route, * - FIB route, q - queued, r - rejected, b - backup
+         t - trapped, o - offload failure
+
+  IPv4 unicast VRF default:
+  O&gt;* 192.11.1.100/32 [110/20] via 199.10.1.252, eth0, weight 1, 00:00:30
+  O&gt;* 192.100.1.0/24 [110/20] via 199.10.1.254, eth0, weight 1, 00:16:59
+  O   192.111.100.0/24 [110/10] is directly connected, eth2, weight 1, 00:17:46
+  O   192.168.150.0/24 [110/10] is directly connected, eth1, weight 1, 00:17:46
+  O&gt;* 192.200.1.0/24 [110/20] via 199.10.1.252, eth0, weight 1, 00:16:59
+  O   199.10.1.0/24 [110/10] is directly connected, eth0, weight 1, 00:16:59
+  rtr-frr02-access#</pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>After the network reconvergence and as the final outcome of the recovery process, the VM Client restores connectivity to the RHEL8 server operating on DR OpenShift Virtualization through the rtr-frr03-dr router (Figure 9):</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>  [admin@vm-server ~]$ tracepath -m8 192.11.1.100
+  1?: [LOCALHOST]                      pmtu 1500
+  1:  rtr-frr02-access                                      0.347ms
+  1:  rtr-frr02-access                                      0.216ms
+  2:  rtr-frr03-dr                                          0.709ms
+  3:  dr-ocp-worker02                                       1.088ms
+        … omitted …
+
+  [admin@vm-server ~]$ curl -Is http://192.11.1.100:22080 | head -n 1
+  HTTP/1.1 200 OK
+  [admin@vm-server ~]$</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<nav class="pagination">
+  <span class="prev"><a href="02-metallb-and-bgp.html#bgp-adm-metallb-bgp" class="query-params-link">2. Architecture</a></span>
+  <span class="next"><a href="04-bgp-lb-addendum.html#bgp-lb-addedum" class="query-params-link">4. Developer Resources</a></span>
+</nav>
+</article>
+<aside class="toc sidebar" data-title="Contents" data-levels="3">
+  <div class="toc-menu"></div>
+</aside>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <img
+          src="../_/img/app-services-logo.png" height="40px" alt="Cloud Native Architecture Solution Patterns"  href="https://redhat.com" ></a>
+</footer><script src="../_/js/vendor/clipboard.js"></script>
+<script src="../_/js/site.js"></script>
+<script async src="../_/js/vendor/highlight.js"></script>
+  </body>
+</html>

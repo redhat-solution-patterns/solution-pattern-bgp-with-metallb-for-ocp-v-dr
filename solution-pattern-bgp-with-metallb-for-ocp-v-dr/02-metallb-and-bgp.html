@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Implementing BGP Load Balancing infrastructure with MetalLB for OpenShift Virtualization :: BGP LB infrastructure with MetalLB for OpenShift Virtualization in DR</title>
+    <link rel="canonical" href="https://redhat-solution-patterns.github.io/solution-patterns/solution-pattern-bgp-with-metallb-for-ocp-v-dr/02-metallb-and-bgp.html">
+    <link rel="prev" href="01-bgp-lb.html#bgp-lb">
+    <link rel="next" href="03-bgp-lb-poc.html#bgp-lb-poc">
+    <meta name="generator" content="Antora 3.0.0">
+    <link rel="stylesheet" href="../_/css/site.css">
+<link rel="icon" href="../_/img/favicon.ico" type="image/x-icon">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" style="font-size: 20px; color: white"
+        href="https://redhat-solution-patterns.github.io/solution-patterns">
+        <img src="../_/img/logo.png" height="35px" alt="Solution Patterns">&nbsp; BGP LB infrastructure with MetalLB for OpenShift Virtualization in DR</a>
+      <button class="navbar-burger" data-target="topbar-nav">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <div class="navbar-item has-dropdown is-hoverable">
+          <a class="navbar-link" href="#">Architectures &amp; Patterns</a>
+          <div class="navbar-dropdown">
+            <a class="navbar-item" href="https://www.redhat.com/architect/portfolio/" target="_blank">Portfolio Architecture&nbsp; </a>
+            <a class="navbar-item" href="https://redhat-solution-patterns.github.io/solution-patterns/patterns.html"  target="_blank">Solution Patterns </a>
+            <a class="navbar-item" href="https://validatedpatterns.io/" target="_blank">Validated Patterns&nbsp;</a>
+            <a class="navbar-item" href="https://catalog.redhat.com/solutions" target="_blank">Ecosystem Solutions&nbsp;</a>
+          </div>
+        </div>
+
+        <div class="navbar-item has-dropdown is-hoverable">
+          <a class="navbar-link" href="#">Resources</a>
+          <div class="navbar-dropdown">
+            <a class="navbar-item" target="_blank" href="https://developers.redhat.com">Red Hat Developers</a>
+            <a class="navbar-item" target="_blank" href="https://developers.redhat.com/app-dev-platform">App Dev Platform</a>
+            <a class="navbar-item" target="_blank" href="https://www.redhat.com/en/products/application-foundations">Red Hat Application Services</a>
+          </div>
+        </div>
+
+          <a class="navbar-item" target="_blank" href="https://github.com/redhat-solution-patterns/redhat-solution-patterns.github.io/issues">Feedback</a>
+          <a class="navbar-item" target="_blank" href="https://redhat-solution-patterns.github.io/solution-patterns/contributors-guide.html">Contribute</a>
+
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="solution-pattern-bgp-with-metallb-for-ocp-v-dr" data-version="master">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <h3 class="title"><a href="index.html" class=" query-params-link">Implementing BGP Load Balancing infrastructure with MetalLB for OpenShift Virtualization</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="index.html">1. Home Page</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="01-bgp-lb.html#bgp-lb">1.1. Use Cases</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="01-bgp-lb.html#_the_story_behind_this_solution_pattern">1.2. The story behind this solution pattern</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="01-bgp-lb.html#_the_solution">1.3. The Solution</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="#bgp-adm-metallb-bgp">2. Architecture</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="#_2_1_metallb_architecture_in_layer_3_bgp_mode">2.1. MetalLB architecture in Layer 3 (BGP mode)</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="#_2_2_administration_of_the_metallb_ipaddresspools_and_external_ip_address_advertisement_via_bgp">2.2. Administration of IPAddressPools and BGP</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="03-bgp-lb-poc.html#bgp-lb-poc">3. See the Solution in Action</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="03-bgp-lb-poc.html#_3_1_proof_of_concept_for_bgp_load_balancer_infrastructure">3.1. Proof-of-Concept Infrastructure</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="03-bgp-lb-poc.html#_3_1_1_initial_situation">3.1.1. Initial situation</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="03-bgp-lb-poc.html#_3_1_2_recovery_prerequisite">3.1.2. Recovery prerequisite</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="03-bgp-lb-poc.html#_3_1_3_primary_cluster_isolation">3.1.3. Primary cluster isolation</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="03-bgp-lb-poc.html#_3_1_4_restore_process_on_dr_cluster">3.1.4. Restore process on DR cluster</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="03-bgp-lb-poc.html#_3_1_5_external_ip_address_reachability_restored">3.1.5. External IP address reachability restored</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="04-bgp-lb-addendum.html#bgp-lb-addedum">4. Developer Resources</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="04-bgp-lb-addendum.html#_4_1_addendum">4.1. Addendum: Versions and Configurations</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="https://redhat-solution-patterns.github.io/solution-patterns/patterns.html">Explore Red Hat Solution Patterns</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">Implementing BGP Load Balancing infrastructure with MetalLB for OpenShift Virtualization</span>
+    <span class="version">master</span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <span class="title">Implementing BGP Load Balancing infrastructure with MetalLB for OpenShift Virtualization</span>
+      <ul class="versions">
+        <li class="version is-current">
+          <a href="index.html">master</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="index.html">Implementing BGP Load Balancing infrastructure with MetalLB for OpenShift Virtualization</a></li>
+    <li><a href="#bgp-adm-metallb-bgp">2. Architecture</a></li>
+  </ul>
+</nav>
+  <div class="edit-this-page"><a href="https://github.com/redhat-solution-patterns/solution-pattern-bgp-with-metallb-for-ocp-v-dr/edit/main/documentation/modules/ROOT/pages/02-metallb-and-bgp.adoc">Edit this Page</a></div>
+  </div>
+  <div class="content">
+<article class="doc">
+<h1 class="page">Implementing BGP Load Balancing infrastructure with MetalLB for OpenShift Virtualization</h1>
+<div class="sect1">
+<h2 id="bgp-adm-metallb-bgp"><a class="anchor" href="#bgp-adm-metallb-bgp"></a><a class="link" href="#bgp-adm-metallb-bgp">2. Architecture</a></h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_2_1_metallb_architecture_in_layer_3_bgp_mode"><a class="anchor" href="#_2_1_metallb_architecture_in_layer_3_bgp_mode"></a><a class="link" href="#_2_1_metallb_architecture_in_layer_3_bgp_mode">2.1. MetalLB architecture in Layer 3 (BGP mode)</a></h3>
+<div class="ulist">
+<ul>
+<li>
+<p>The MetalLB architecture in Layer 3 (BGP mode) relies on the FRR (FRRouting) suite to instantiate the BGP Speaker PODs in the designated nodes within Red Hat OpenShift Virtualization.</p>
+</li>
+<li>
+<p>The objective of the MetalLB BGP Speakers is to advertise, to the external iBGP or eBGP peers (iBGP in this Proof Of Concept), the Network Layer Reachability Information (NLRI) related to the External IP addresses assigned to the LoadBalancer services.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><em>Figure 3 - BGP Equal-Cost Multi-Path (ECMP)</em></p>
+</div>
+<div class="imageblock left">
+<div class="content">
+<img src="_images/Figure3-BGP_Equal_Cost_Multi-Paty-ECMP.jpg" alt="[width=&quot;300%&quot;" height="500%">
+</div>
+</div>
+<div class="paragraph">
+<p><br>
+<br>
+<br>
+<br>
+<br>
+<br>
+</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The BGP Equal-Cost Multi-Path (ECMP) feature (Figure 3), which allows for the distribution of traffic across multiple equal-cost paths to the same destination, along with BGP&#8217;s failover capabilities, are critical components that enhance both the scalability and performance of a BGP solution.</p>
+</li>
+<li>
+<p>Additionally, the reconvergence capabilities of routing protocols contribute significantly to the system resilience.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Bidirectional Forward Detection (BFD) plays a vital role in BGP performance by reducing the time required to detect network failures.
+BFD can identify failures within milliseconds, offering a substantial improvement over the standard keepalive timeout recommendations of 20 seconds specified in RFC 4271, with some third-party providers adopting longer timeouts such as 60 seconds.</p>
+</li>
+<li>
+<p>The default configuration of the MetalLB BGP Speaker is to deny any Network Layer Reachability Information (NLRI) advertised by the BGP peers (external routers).</p>
+</li>
+<li>
+<p>This posture presents a technical challenge regarding how to enable connectivity from internal endpoints behind the LoadBalancer services to remote subnets that are not directly connected to the Red Hat OpenShift Virtualization worker nodes.</p>
+</li>
+<li>
+<p>The Network Address Translation (NAT) process implemented on the external router connected to the worker nodes of OpenShift Virtualization is one of the possible approaches for managing this type of network complexity (Figure 4) connected to the traditional Kubernetes networking where the MetalLB architecture in Layer 3 (BGP mode) speaker are involved.</p>
+</li>
+<li>
+<p>An alternative approach for managing this complexity is available in this Red Hat blog post:
+<a href="https://www.redhat.com/en/blog/learning-kubernetes-nodes-networking-routes-via-bgp">Learning Kubernetes nodes networking routes via BGP</a></p>
+</li>
+<li>
+<p>Implementing user-defined networks (UDNs) in Red Hat OpenShift Virtualization using Virtual Routing and Forwarding (VRF), advertising them via BGP with FRRouting speakers, and injecting learned BGP prefixes back into the VRF creates an adaptable solution that makes entire user-defined networks (UDNs) prefixes, not just LoadBalancer service IPs, directly reachable from the customers network infrastructure.</p>
+</li>
+<li>
+<p>This topic, related to user-defined networks (UDNs) exposed via BGP routing protocol, is extensively discussed in this article:
+<a href="https://developers.redhat.com/articles/2025/10/23/exposing-openshift-networks-using-bgp#the_benefits_of_bgp_for_openshift_networking">Exposing OpenShift networks using BGP</a></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><em>Figure 4 - Implementation of Network Address Translation to facilitate connectivity to remote subnets.</em></p>
+</div>
+<div class="imageblock text-left">
+<div class="content">
+<img src="_images/Figure4-Implementation_of_Network_Address_Translation.jpg" alt="Figure4 Implementation of Network Address Translation" width="100%" height="100%">
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_2_2_administration_of_the_metallb_ipaddresspools_and_external_ip_address_advertisement_via_bgp"><a class="anchor" href="#_2_2_administration_of_the_metallb_ipaddresspools_and_external_ip_address_advertisement_via_bgp"></a><a class="link" href="#_2_2_administration_of_the_metallb_ipaddresspools_and_external_ip_address_advertisement_via_bgp">2.2. Administration of the MetalLB IPAddressPools and External IP Address advertisement via BGP</a></h3>
+<div class="ulist">
+<ul>
+<li>
+<p>MetalLB can automatically allocate External IP addresses (IPv4 and IPv6), to OpenShift Virtualization services of type LoadBalancer, from any IP address pool where autoAssign is set to true (Figure 5).</p>
+</li>
+<li>
+<p>MetalLB offers manual IP address assignment to enhance administrators' control over the allocation of external IP addresses for LoadBalancer services.
+Manual allocation of External IP Addresses (Figure 5) can be implemented by means of these configurations :</p>
+</li>
+</ul>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 66.6667%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top"><strong>Setting required for manual External IP allocation</strong></th>
+<th class="tableblock halign-left valign-top"><strong>Description</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p><code>autoAssign: false</code></p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>Field to be added to the IPAddressPool’s spec planned for manual External IP allocation. The target of this field is preventing any automatic IP assignment from this pool.</p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p><code>metallb.io/address-pool: &lt;IPAddressPool name&gt;</code></p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>Annotation to be added to the OpenShift Virtualization Service and valorized with the name of the IPAddressPool planned as source for the manual External IP Allocation.</p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p><code>loadBalancerIP: &lt;IP address to be assigned manually&gt;</code></p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>Field to be added to the OpenShift Virtualization Service and valorized with the IP Address to be manually assigned to the service itself.</p>
+</div></div></td>
+</tr>
+</tbody>
+</table>
+<div class="ulist">
+<ul>
+<li>
+<p>The selection of the IP Address Pool (the source from which the External IP address will be assigned) can be influenced by other factors, as illustrated in this table:</p>
+</li>
+</ul>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 66.6667%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top"><strong>serviceAllocation fields</strong></th>
+<th class="tableblock halign-left valign-top"><strong>Description</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p><code>namespaceSelectors</code></p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>List of label selectors used to select specific namespace(s) for the IP pool. This serves as a flexible alternative to a static namespace list.</p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p><code>namespaces</code></p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>A literal list of namespace(s) to which the IP pool can be attached.</p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p><code>priority</code></p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>The priority assigned to the IP pool during the IP allocation process for a service. Higher priority pools are evaluated first.</p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p><code>serviceSelectors</code></p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>List of label selectors to select specific service(s) for which this IP pool can be used for IP allocation.</p>
+</div></div></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><em>Figure 5 - Service definition with some examples of manual and automatic External IP Address assignment.</em></p>
+</div>
+<div class="imageblock text-left">
+<div class="content">
+<img src="_images/Figure5-Service_definition.jpg" alt="Figure5 Service definition" width="100%" height="100%">
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The IPAddressPools must be included within the BGPAdvertisement object to enable the advertisement of Network Layer Reachability Information (NLRI), which consists of the Network Prefix and Prefix Length associated with external IP addresses assigned to LoadBalancer services.</p>
+</li>
+<li>
+<p>The purpose of the BGPAdvertisement (Figure 6) is to establish a relationship between the IPAddressPools (specifically which External IP Addresses assigned will be advertised from each IPAddressPools) and the BGP peers (to which the External IP Addresses will be advertised) involved in the BGP sessions with the MetalLB speakers.</p>
+</li>
+<li>
+<p>This configuration ensures that the External IP Addresses advertised as Network Layer Reachability Information to the BGP peers will be accessible from outside the OpenShift Virtualization cluster.</p>
+</li>
+<li>
+<p>It is important to note that the Network Layer Reachability Information, connected to the External IP Addresses assigned to the LoadBalancer service, will only be advertised if at least one virtual machine is active and connected as an endpoint to the LoadBalancer service.</p>
+</li>
+<li>
+<p>NLRI advertisement can be influenced by these BGAdvertisements fields:</p>
+</li>
+</ul>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 66.6667%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top"><strong>BGPAdvertisement fields</strong></th>
+<th class="tableblock halign-left valign-top"><strong>Description</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p><code>aggregationLength</code></p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>The aggregation-length advertisement option lets you “roll up” the /32s into a larger prefix. Defaults to <strong>32</strong>. Works for IPv4 addresses.</p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p><code>aggregationLengthV6</code></p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>The aggregation-length advertisement option lets you “roll up” the /128s into a larger prefix. Defaults to <strong>128</strong>. Works for IPv6 addresses.</p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p><code>ipAddressPoolSelectors</code></p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>A selector for the IPAddressPools which would get advertised via this advertisement. If no IPAddressPool is selected by this or by the list, the advertisement is applied to all the IPAddressPools.</p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p><code>ipAddressPools</code></p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>The list of IPAddressPools to advertise via this advertisement, specifically selected by name.</p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p><code>nodeSelectors</code></p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>Allows limiting the nodes to announce as next hops for the LoadBalancer IP. When empty, all nodes in the cluster are announced as next hops.</p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p><code>peers</code></p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>Limits the BGP peers to which the IPs of the selected pools are advertised. When empty, the LoadBalancer IP is announced to all configured BGPPeers.</p>
+</div></div></td>
+</tr>
+</tbody>
+</table>
+<div class="ulist">
+<ul>
+<li>
+<p>In a BGP network topology based on iBGP, where the local ASN matches the peer ASN (Figure 1), the behavior of the BGP protocol can be affected by both the BGP Peer configurations and the BFD Profile, as perceptible in the next two tables.</p>
+</li>
+<li>
+<p>Please note that the BGPPeer Custom Resource (CR) contains the necessary information to establish a BGP session with a single peer.</p>
+</li>
+<li>
+<p>To establish sessions with multiple external routers, it is necessary to define multiple BGPPeer CRs, as illustrated in Figure 6.</p>
+</li>
+</ul>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 66.6667%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top"><strong>Example of BGPPeer fields</strong></th>
+<th class="tableblock halign-left valign-top"><strong>Description</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p><code>bfdProfile</code></p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>The name of the BFD Profile to be used for the BFD session associated with the BGP session. If not set, the BFD session will not be established.</p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p><code>enableGracefulRestart</code></p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>Allows the BGP Peer to continue forwarding data packets along known routes while the routing protocol information is being restored.</p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p><code>keepaliveTime</code></p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>Requested BGP keepalive time, per RFC4271 (default: <strong>60s</strong>).</p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p><code>holdTime</code></p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>Requested BGP hold time, per RFC4271 (default: <strong>180s</strong>).</p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p><code>connectTime</code></p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>Requested BGP connect time; controls how long BGP waits between connection attempts to a neighbor (default: <strong>120s</strong>).</p>
+</div></div></td>
+</tr>
+</tbody>
+</table>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 66.6667%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top"><strong>Example of BFDProfile fields</strong></th>
+<th class="tableblock halign-left valign-top"><strong>Description</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p><code>receiveInterval</code></p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>The minimum interval (in milliseconds) that this system is capable of receiving control packets (default: <strong>300ms</strong>).</p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p><code>transmitInterval</code></p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>The minimum transmission interval (less jitter) that this system wants to use when sending BFD control packets (default: <strong>300ms</strong>).</p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p><code>detectMultiplier</code></p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>Configures the detection multiplier to determine packet loss. The remote transmission interval is multiplied by this value to determine the connection loss detection timer (default: <strong>3</strong>).</p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p><code>passiveMode</code></p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>Marks the session as passive. A passive session will not attempt to initiate the connection; it waits for control packets from a peer before it begins replying.</p>
+</div></div></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><em>Figure 6 - MetalLB in Layer 3 mode (BGB mode) - Object relationships and BGP speaker association with OpenShift Virtualization nodes.</em></p>
+</div>
+<div class="imageblock text-left">
+<div class="content">
+<img src="_images/Figure6-MetalLB_in_Layer3-BGP_mode.jpg" alt="Figure6 MetalLB in Layer3 BGP mode" width="100%" height="100%">
+</div>
+</div>
+</div>
+</div>
+</div>
+<nav class="pagination">
+  <span class="prev"><a href="01-bgp-lb.html#bgp-lb" class="query-params-link">1.1. Use Cases</a></span>
+  <span class="next"><a href="03-bgp-lb-poc.html#bgp-lb-poc" class="query-params-link">3. See the Solution in Action</a></span>
+</nav>
+</article>
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <img
+          src="../_/img/app-services-logo.png" height="40px" alt="Cloud Native Architecture Solution Patterns"  href="https://redhat.com" ></a>
+</footer><script src="../_/js/vendor/clipboard.js"></script>
+<script src="../_/js/site.js"></script>
+<script async src="../_/js/vendor/highlight.js"></script>
+  </body>
+</html>
