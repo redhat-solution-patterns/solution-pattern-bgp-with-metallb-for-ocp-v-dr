@@ -2,22 +2,22 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 <url>
 <loc>https://redhat-solution-patterns.github.io/solution-patterns/solution-pattern-bgp-with-metallb-for-ocp-v-dr/01-bgp-lb.html</loc>
-<lastmod>2026-05-28T17:12:53.468Z</lastmod>
+<lastmod>2026-05-28T17:30:20.678Z</lastmod>
 </url>
 <url>
 <loc>https://redhat-solution-patterns.github.io/solution-patterns/solution-pattern-bgp-with-metallb-for-ocp-v-dr/02-metallb-and-bgp.html</loc>
-<lastmod>2026-05-28T17:12:53.468Z</lastmod>
+<lastmod>2026-05-28T17:30:20.678Z</lastmod>
 </url>
 <url>
 <loc>https://redhat-solution-patterns.github.io/solution-patterns/solution-pattern-bgp-with-metallb-for-ocp-v-dr/03-bgp-lb-poc.html</loc>
-<lastmod>2026-05-28T17:12:53.468Z</lastmod>
+<lastmod>2026-05-28T17:30:20.678Z</lastmod>
 </url>
 <url>
 <loc>https://redhat-solution-patterns.github.io/solution-patterns/solution-pattern-bgp-with-metallb-for-ocp-v-dr/04-bgp-lb-addendum.html</loc>
-<lastmod>2026-05-28T17:12:53.468Z</lastmod>
+<lastmod>2026-05-28T17:30:20.678Z</lastmod>
 </url>
 <url>
 <loc>https://redhat-solution-patterns.github.io/solution-patterns/solution-pattern-bgp-with-metallb-for-ocp-v-dr/index.html</loc>
-<lastmod>2026-05-28T17:12:53.468Z</lastmod>
+<lastmod>2026-05-28T17:30:20.678Z</lastmod>
 </url>
 </urlset>
