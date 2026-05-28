@@ -3,7 +3,7 @@ runtime:
 
 site:
   title: BGP LB infrastructure with MetalLB for OpenShift Virtualization in DR
-  url: https://redhat-solution-patterns.github.io/solution-patterns/
+  url: https://www.solutionpatterns.io/solution-pattern-bgp-with-metallb-for-ocp-v-dr/solution-pattern-bgp-with-metallb-for-ocp-v-dr
   start_page: solution-pattern-bgp-with-metallb-for-ocp-v-dr::index.adoc
   keys:
     google_analytics: 'G-KQS1H4XLHJ'
