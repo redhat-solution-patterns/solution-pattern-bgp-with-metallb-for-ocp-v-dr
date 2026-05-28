@@ -3,7 +3,7 @@ runtime:
 
 site:
   title: BGP LB infrastructure with MetalLB for OpenShift Virtualization in DR
-  url: ""
+  url: /
   start_page: solution-pattern-bgp-with-metallb-for-ocp-v-dr::index.adoc
 
 content:
