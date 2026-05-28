@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 <url>
-<loc>http://www.solutionpatterns.io/solution-pattern-bgp-with-metallb-for-ocp-v-dr/solution-pattern-bgp-with-metallb-for-ocp-v-dr/01-bgp-lb.html</loc>
-<lastmod>2026-05-28T16:48:40.721Z</lastmod>
+<loc>https://redhat-solution-patterns.github.io/solution-patterns/solution-pattern-bgp-with-metallb-for-ocp-v-dr/01-bgp-lb.html</loc>
+<lastmod>2026-05-28T17:05:51.351Z</lastmod>
 </url>
 <url>
-<loc>http://www.solutionpatterns.io/solution-pattern-bgp-with-metallb-for-ocp-v-dr/solution-pattern-bgp-with-metallb-for-ocp-v-dr/02-metallb-and-bgp.html</loc>
-<lastmod>2026-05-28T16:48:40.721Z</lastmod>
+<loc>https://redhat-solution-patterns.github.io/solution-patterns/solution-pattern-bgp-with-metallb-for-ocp-v-dr/02-metallb-and-bgp.html</loc>
+<lastmod>2026-05-28T17:05:51.351Z</lastmod>
 </url>
 <url>
-<loc>http://www.solutionpatterns.io/solution-pattern-bgp-with-metallb-for-ocp-v-dr/solution-pattern-bgp-with-metallb-for-ocp-v-dr/03-bgp-lb-poc.html</loc>
-<lastmod>2026-05-28T16:48:40.721Z</lastmod>
+<loc>https://redhat-solution-patterns.github.io/solution-patterns/solution-pattern-bgp-with-metallb-for-ocp-v-dr/03-bgp-lb-poc.html</loc>
+<lastmod>2026-05-28T17:05:51.351Z</lastmod>
 </url>
 <url>
-<loc>http://www.solutionpatterns.io/solution-pattern-bgp-with-metallb-for-ocp-v-dr/solution-pattern-bgp-with-metallb-for-ocp-v-dr/04-bgp-lb-addendum.html</loc>
-<lastmod>2026-05-28T16:48:40.721Z</lastmod>
+<loc>https://redhat-solution-patterns.github.io/solution-patterns/solution-pattern-bgp-with-metallb-for-ocp-v-dr/04-bgp-lb-addendum.html</loc>
+<lastmod>2026-05-28T17:05:51.351Z</lastmod>
 </url>
 <url>
-<loc>http://www.solutionpatterns.io/solution-pattern-bgp-with-metallb-for-ocp-v-dr/solution-pattern-bgp-with-metallb-for-ocp-v-dr/index.html</loc>
-<lastmod>2026-05-28T16:48:40.721Z</lastmod>
+<loc>https://redhat-solution-patterns.github.io/solution-patterns/solution-pattern-bgp-with-metallb-for-ocp-v-dr/index.html</loc>
+<lastmod>2026-05-28T17:05:51.351Z</lastmod>
 </url>
 </urlset>
