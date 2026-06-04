@@ -1,4 +1,3 @@
-
 = Implementing BGP Load Balancing infrastructure with MetalLB for OpenShift Virtualization
 
 :page-layout: home
