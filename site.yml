@@ -2,7 +2,7 @@ runtime:
   cache_dir: ./.cache/antora
 
 site:
-  title: BGP LB infrastructure with MetalLB for OpenShift Virtualization in DR
+  title: Implementing BGP Load Balancing infrastructure with MetalLB for OpenShift Virtualization
   url: https://www.solutionpatterns.io/solution-pattern-bgp-with-metallb-for-ocp-v-dr/solution-pattern-bgp-with-metallb-for-ocp-v-dr
   start_page: solution-pattern-bgp-with-metallb-for-ocp-v-dr::index.adoc
   keys:
